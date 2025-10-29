@@ -1,0 +1,48 @@
+services:
+  
+  auth-service:
+    build: . 
+    container_name: wgg_auth_service
+    ports:
+      - "8001:8001" 
+    environment:
+      
+      - DATABASE_URL=mysql+pymysql://root:password@mysql-db:3306/wgg_auth_db 
+      - AUTH_SECRET_KEY=sua_chave_secreta_muito_forte_aqui
+    depends_on:
+      
+      mysql-db:
+        condition: service_healthy 
+    networks:
+      - wgg-network
+
+  
+  mysql-db:
+    image: mysql:8.0 
+    container_name: wgg_mysql_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=password 
+      - MYSQL_DATABASE=wgg_auth_db   
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - wgg-network
+      
+    
+    healthcheck:
+      
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s     
+      timeout: 20s     
+      retries: 10      
+      start_period: 30s 
+    
+
+volumes:
+  db-data:
+
+networks:
+  wgg-network:
+    driver: bridge
