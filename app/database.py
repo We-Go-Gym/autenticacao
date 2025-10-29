@@ -6,7 +6,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
-# URL do banco de dados MySQL 
+# URL do banco de dados MySQL
 DATABASE_URL = os.getenv(
     "DATABASE_URL_AUTH", "mysql+pymysql://root:password@mysql-db:3306/wgg_auth_db"
 )

@@ -16,15 +16,15 @@ from app import models, schemas
 
 
 MAX_RETRIES = 10
-RETRY_DELAY = 3 
+RETRY_DELAY = 3
 
 for i in range(MAX_RETRIES):
     try:
         # Tenta criar as tabelas onde a conexão é feita e falha
         Base.metadata.create_all(engine)
         print("INFO: Tabelas criadas com sucesso no banco de dados")
-        break 
-    
+        break
+
     except OperationalError as e:
         if i < MAX_RETRIES - 1:
             time.sleep(RETRY_DELAY)
@@ -123,7 +123,7 @@ def login_user(request: LoginRequest, session: Session = Depends(get_session)):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
-            headers={"WWW-Authenticate": "Bearer"},  
+            headers={"WWW-Authenticate": "Bearer"},
         )
 
     token_data = {

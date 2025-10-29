@@ -1,18 +1,18 @@
 """Modelos das tabelas usando SQLAlchemy para o serviço de autenticação."""
+
 # pylint: disable=too-few-public-methods
 
 import enum
 
 from sqlalchemy import Column, Integer, String, Enum
-from app.database import Base  
-
+from app.database import Base
 
 
 class UserRole(enum.Enum):
     """Enumeração para os papéis de usuário da academia."""
 
-    ADMIN = "admin"  
-    ALUNO = "aluno"  
+    ADMIN = "admin"
+    ALUNO = "aluno"
 
 
 class User(Base):
