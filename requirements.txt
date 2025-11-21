@@ -6,3 +6,4 @@ passlib[argon2]
 PyJWT
 pydantic[email]
 cryptography
+python-multipart

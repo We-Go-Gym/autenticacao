@@ -1,48 +1,37 @@
 services:
-  
   auth-service:
-    build: . 
+    build: .
     container_name: wgg_auth_service
     ports:
-      - "8001:8001" 
+      - "8001:8001"
+    env_file:
+      - .env
     environment:
-      
-      - DATABASE_URL=mysql+pymysql://root:password@mysql-db:3306/wgg_auth_db 
-      - AUTH_SECRET_KEY=sua_chave_secreta_muito_forte_aqui
+      - DATABASE_URL_AUTH=${DATABASE_URL}
+      - AUTH_SECRET_KEY=${AUTH_SECRET_KEY}
     depends_on:
-      
       mysql-db:
-        condition: service_healthy 
-    networks:
-      - wgg-network
+        condition: service_healthy
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 
-  
   mysql-db:
-    image: mysql:8.0 
-    container_name: wgg_mysql_db
+    image: mysql:8.0
+    container_name: wgg_auth_db
+    env_file:
+      - .env
     environment:
-      - MYSQL_ROOT_PASSWORD=password 
-      - MYSQL_DATABASE=wgg_auth_db   
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     ports:
-      - "3307:3306"
+      - "3307:3306" # Exposto na 3307 para não conflitar com o outro banco
     volumes:
-      - db-data:/var/lib/mysql
-    networks:
-      - wgg-network
-      
-    
+      - auth_db_data:/var/lib/mysql
     healthcheck:
-      
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
-      interval: 5s     
-      timeout: 20s     
-      retries: 10      
-      start_period: 30s 
-    
+      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-D", "${MYSQL_DATABASE}", "-e", "select 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
 volumes:
-  db-data:
-
-networks:
-  wgg-network:
-    driver: bridge
+  auth_db_data:
