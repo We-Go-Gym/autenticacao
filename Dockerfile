@@ -1,13 +1,14 @@
-# Dockerfile (Para o Serviço de Autenticação WGG)
+# Dockerfile para a autenticação
 FROM python:3.11-slim
 
 WORKDIR /code
 
+# Instala dependências
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copia o código
 COPY ./app /code/app
 
-EXPOSE 8001
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
+# Comando de Inicialização:
+CMD sh -c "python -m app.create_admin && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8001}"
