@@ -1,5 +1,5 @@
 """Módulo de inicialização da aplicação de Autenticação"""
-# pylint: disable=raise-missing-from
+# pylint: disable=raise-missing-from, no-member
 
 import os
 import time
